@@ -1,0 +1,31 @@
+name: Artifacts
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  create-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Artifact
+        run: |
+          mkdir -p custom/subfolder
+          touch custom/subfolder/my-artifact.json
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: custom/**/*
+  use-artifacts:
+    runs-on: ubuntu-latest
+    needs:
+      - create-artifacts
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: my-artifact
+      - name: Use Artifact
+        run: |
+          ls
+          cp subfolder/my-artifact.json new-artifact.json
+
